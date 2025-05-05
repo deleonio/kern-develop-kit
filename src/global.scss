@@ -1,0 +1,85 @@
+@use 'mixins/rem' as *;
+
+@layer kol-theme-global {
+	:host {
+		--border-radius: var(--kolibri-border-radius, #{rem(5)});
+		--font-family: var(--kolibri-font-family, Verdana, Arial, Calibri, Helvetica, sans-serif);
+		--font-size: var(--kolibri-font-size, #{rem(16)});
+		--spacing: var(--kolibri-spacing, #{rem(4)});
+		--border-width: var(--kolibri-border-width, #{rem(1)});
+		--color-primary: var(--kolibri-color-primary, #004b76);
+		--color-primary-variant: var(--kolibri-color-primary-variant, #0077b6);
+		--color-danger: var(--kolibri-color-danger, #b4003c);
+		--color-warning: var(--kolibri-color-warning, #c44931);
+		--color-success: var(--kolibri-color-success, #005c45);
+		--color-subtle: var(--kolibri-color-subtle, #576164);
+		--color-light: var(--kolibri-color-light, #ffffff);
+		--color-text: var(--kolibri-color-text, #202020);
+		--color-mute: var(--kolibri-color-mute, #f2f3f4);
+		--color-mute-variant: var(--kolibri-color-mute-variant, #bec5c9);
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin: 0;
+		padding: 0;
+	}
+
+	*[tabindex]:focus,
+	.kol-input:not(.checkbox, .radio) .input:focus-within,
+	.kol-input:is(.checkbox, .radio) input:focus,
+	summary:focus {
+		cursor: pointer;
+		outline-color: var(--color-primary-variant);
+		outline-offset: 2px;
+		outline-style: solid;
+		outline-width: 3px;
+		transition: outline-offset 0.2s linear;
+	}
+
+	.kol-heading-wc {
+		font-weight: 700;
+	}
+
+	.kol-tooltip-wc .tooltip-floating {
+		border: var(--border-width) solid var(--color-subtle);
+		border-radius: var(--border-radius);
+	}
+
+	.kol-tooltip-wc .tooltip-arrow {
+		border: var(--border-width) solid var(--color-subtle);
+	}
+
+	.kol-tooltip-wc .tooltip-area {
+		background-color: var(--color-light);
+	}
+
+	.kol-tooltip-wc .tooltip-content {
+		border-radius: var(--border-radius);
+		line-height: 1.5;
+		padding: rem(8) rem(12);
+	}
+
+	.kol-span-wc,
+	.kol-span-wc > span {
+		gap: rem(8);
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+}

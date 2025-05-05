@@ -1,0 +1,88 @@
+@use '../mixins/alert-wc' as *;
+@use '../mixins/badge-text-hint' as *;
+@use '../mixins/input-error' as *;
+@use '../mixins/rem' as *;
+@use '../mixins/typography' as *;
+
+@layer kol-theme-component {
+	@include badge-text-hint;
+
+	:host {
+		font-family: var(--font-family);
+		@include kol-alert-theme;
+	}
+
+	.inputs-wrapper {
+		gap: rem(16);
+	}
+
+	.kol-input {
+		gap: rem(4);
+	}
+
+	.kol-input .error:not(.hidden-error) {
+		order: 1;
+	}
+
+	.kol-input label {
+		order: 2;
+	}
+
+	.kol-input .input {
+		order: 3;
+	}
+
+	.kol-input .hint {
+		order: 4;
+		@include kol-typography-hint;
+	}
+
+	input::placeholder {
+		color: var(--color-subtle);
+	}
+
+	.input {
+		background-color: var(--color-light);
+		border-color: var(--color-subtle);
+		border-radius: var(--border-radius);
+		border-style: solid;
+		border-width: 2px;
+		padding: 0 rem(8);
+	}
+
+	.input.icon-left > .kol-icon:first-child {
+		margin-right: rem(8);
+	}
+
+	.input.icon-right > .kol-icon:last-child {
+		margin-left: rem(8);
+	}
+
+	.input:is(.icon-left, .icon-right) {
+		padding-left: rem(16);
+		padding-right: rem(16);
+	}
+
+	:not(.disabled) .input:hover {
+		border-color: var(--color-primary);
+	}
+
+	input:disabled {
+		cursor: not-allowed;
+	}
+
+	.required label > span::after {
+		content: '*';
+		padding-left: 0.125em;
+	}
+
+	.kol-input.error:not(.hidden-error) {
+		@include input-error;
+	}
+
+	.kol-input.disabled .input {
+		background-color: var(--color-mute);
+		border-color: var(--color-mute-variant);
+		color: var(--color-text);
+	}
+}

@@ -1,0 +1,67 @@
+{
+	"name": "@kern-ux/kern-webcomponents-kit",
+	"version": "0.0.0",
+	"license": "EUPL-1.2",
+	"type": "module",
+	"sideEffects": false,
+	"scripts": {
+		"build": "rollup -c",
+		"dev": "rollup -c --watch",
+		"format": "prettier --check src",
+		"lint": "tsc --noemit && eslint src",
+		"prepare": "cpy \"node_modules/@public-ui/components/assets/**/*\" assets --dot",
+		"start": "npm-run-all2 --parallel dev serve",
+		"serve": "sh serve.sh YOUR_THEME",
+		"test": "cross-env KOLIBRI_VISUAL_TESTS_EXPECT_TIMEOUT=15000 KOLIBRI_VISUAL_TESTS_TIMEOUT=15000 THEME_MODULE=dist THEME_EXPORT=YOUR_THEME kolibri-visual-test",
+		"test-update": "cross-env KOLIBRI_VISUAL_TESTS_EXPECT_TIMEOUT=15000 KOLIBRI_VISUAL_TESTS_TIMEOUT=15000 THEME_MODULE=dist THEME_EXPORT=YOUR_THEME kolibri-visual-test --update-snapshots theme-snapshots.spec.js",
+		"pretest": "pnpm build",
+		"pretest-update": "pnpm build",
+		"unused": "knip"
+	},
+	"devDependencies": {
+		"@public-ui/components": "2.2.10",
+		"@public-ui/sample-react": "2.2.10",
+		"@public-ui/visual-tests": "2.2.10",
+		"@rollup/plugin-commonjs": "28.0.3",
+		"@rollup/plugin-node-resolve": "16.0.1",
+		"@rollup/plugin-typescript": "12.1.2",
+		"@typescript-eslint/eslint-plugin": "7.18.0",
+		"@typescript-eslint/parser": "7.18.0",
+		"adopted-style-sheets": "1.1.8",
+		"cpy-cli": "5.0.0",
+		"cross-env": "7.0.3",
+		"eslint": "8.57.1",
+		"knip": "5.50.5",
+		"nodemon": "3.1.10",
+		"npm-run-all2": "7.0.2",
+		"prettier": "3.5.3",
+		"postcss": "8.5.3",
+		"rollup": "4.40.1",
+		"rollup-plugin-postcss": "4.0.2",
+		"sass-embedded": "1.87.0",
+		"typescript": "5.8.3",
+		"unbuild": "3.5.0"
+	},
+	"peerDependencies": {
+		"@public-ui/components": "2.2.10"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"assets",
+		"dist"
+	],
+	"engines": {
+		"node": "^22",
+		"npm": "^10",
+		"pnpm": "^10"
+	}
+}
