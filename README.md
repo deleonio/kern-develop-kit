@@ -1,4 +1,4 @@
-# KERN – WebComponents-Kit
+# KERN – KoliBri-Kit
 
 This is the default theme for the [Public UI web component library](https://public-ui.github.io). You can customize this theme by using `css variables` or by creating a new theme.
 
