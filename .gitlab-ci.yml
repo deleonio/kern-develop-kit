@@ -7,7 +7,7 @@
 #   Scopes: api (full access) or write_repository (repository write access)
 #
 variables:
-  NODE_VERSION: '22'
+  NODE_VERSION: '22.12'
   PNPM_VERSION: '10'
 
 stages:
