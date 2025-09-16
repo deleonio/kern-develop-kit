@@ -1,121 +1,30 @@
-@use '../mixins/rem' as *;
-
-$duration: 0.4s;
+@use '~@public-ui/components/index' as *;
+@use '../mixins/card' as *;
 
 @layer kol-theme-component {
-	.drawer__wrapper {
-		box-shadow: 0 0 4px var(--color-subtle);
+	@include card('kol-card');
+
+	.kol-drawer__wrapper {
+		--kol-card-box-shadow: 0 to-rem(24) to-rem(60) rgb(0, 0, 0, 0.3), 0 to-rem(8) to-rem(16) 0 rgb(0, 0, 0, 0.1);
 
 		&--left {
-			animation: slideInLeft $duration forwards;
-
-			&.is-closing {
-				animation: slideOutLeft $duration forwards;
-			}
+			--kol-card-border-radius: 0 var(--kern-metric-border-radius-large) var(--kern-metric-border-radius-large) 0;
 		}
 
 		&--right {
-			animation: slideInRight $duration forwards;
-
-			&.is-closing {
-				animation: slideOutRight $duration forwards;
-			}
+			--kol-card-border-radius: var(--kern-metric-border-radius-large) 0 0 var(--kern-metric-border-radius-large);
 		}
 
 		&--top {
-			animation: slideInTop $duration forwards;
-
-			&.is-closing {
-				animation: slideOutTop $duration forwards;
-			}
+			--kol-card-border-radius: 0 0 var(--kern-metric-border-radius-large) var(--kern-metric-border-radius-large);
 		}
 
 		&--bottom {
-			animation: slideInBottom $duration forwards;
-
-			&.is-closing {
-				animation: slideOutBottom $duration forwards;
-			}
+			--kol-card-border-radius: var(--kern-metric-border-radius-large) var(--kern-metric-border-radius-large) 0 0;
 		}
-	}
-}
 
-@keyframes slideInLeft {
-	from {
-		transform: translateX(-100%);
-	}
-
-	to {
-		transform: translateX(0);
-	}
-}
-
-@keyframes slideInRight {
-	from {
-		transform: translateX(100%);
-	}
-
-	to {
-		transform: translateX(0);
-	}
-}
-
-@keyframes slideInTop {
-	from {
-		transform: translateY(-100%);
-	}
-
-	to {
-		transform: translateY(0);
-	}
-}
-
-@keyframes slideInBottom {
-	from {
-		transform: translateY(100%);
-	}
-
-	to {
-		transform: translateY(0);
-	}
-}
-
-@keyframes slideOutLeft {
-	from {
-		transform: translateX(0);
-	}
-
-	to {
-		transform: translateX(-100%);
-	}
-}
-
-@keyframes slideOutRight {
-	from {
-		transform: translateX(0);
-	}
-
-	to {
-		transform: translateX(100%);
-	}
-}
-
-@keyframes slideOutTop {
-	from {
-		transform: translateY(0);
-	}
-
-	to {
-		transform: translateY(-100%);
-	}
-}
-
-@keyframes slideOutBottom {
-	from {
-		transform: translateY(0);
-	}
-
-	to {
-		transform: translateY(100%);
+		.kol-card {
+			border: 0;
+		}
 	}
 }

@@ -1,48 +1,64 @@
-@use '../mixins/rem' as *;
+@use '~@public-ui/components/index' as *;
+@use '../mixins/link' as *;
 
 @layer kol-theme-component {
-	.tree-item {
-		--tree-item-indentation: #{rem(20)};
-	}
+	.kol-tree-item {
+		display: flex;
+		gap: var(--kern-metric-space-small);
+		flex-direction: column;
 
-	.tree-link {
-		display: block;
-		border: 1px solid transparent;
+		@include kol-link('kol-tree-item__text');
 
-		&:hover,
-		&:focus-within {
-			border: 1px solid var(--color-primary);
-			background-color: var(--color-primary-variant);
+		&__link {
+			background-color: var(--kern-color-layout-background-hued);
+			display: flex;
+			gap: var(--kern-metric-space-small);
+			flex-direction: row;
 
-			& > a {
-				outline-offset: 0;
-			}
+			@include kol-link('kol-tree-item__toggle-button');
 
-			& > a,
-			.toggle-button {
-				color: var(--color-light);
-			}
-		}
+			.kol-tree-item__toggle-button {
+				align-items: center;
 
-		&.active {
-			background-color: var(--color-primary);
-
-			a,
-			.toggle-button {
-				color: var(--color-light);
-			}
-		}
-
-		a {
-			color: var(--color-text);
-			text-decoration: none;
-			text-align: left;
-
-			.toggle-button:hover {
-				.toggle-button-icon::part(icon) {
-					transform: scale(1.6);
+				&:hover .kol-icon {
+					font-size: to-rem(32);
 				}
 			}
+
+			.kol-link {
+				width: 100%;
+				padding-right: 0;
+
+				&:focus {
+					outline-color: var(--kern-color-action-focus-background);
+				}
+
+				.kol-span,
+				.kol-span__container,
+				.kol-span__label,
+				.kol-tree-item__link-inner,
+				.kol-tree-item__text {
+					width: 100%;
+				}
+			}
+
+			&-inner {
+				gap: var(--kern-metric-space-x-small);
+			}
+
+			&--active {
+				background: rgb(from var(--kern-color-action-default) r g b / var(--kern-color-action-state-opacity-active));
+			}
+
+			&:hover {
+				background: rgb(from var(--kern-color-action-default) r g b / var(--kern-color-action-state-opacity-hover));
+			}
+		}
+
+		&__children {
+			display: flex;
+			gap: var(--kern-metric-space-small);
+			flex-direction: column;
 		}
 	}
 }

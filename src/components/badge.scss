@@ -1,45 +1,43 @@
-@use '../mixins/rem' as *;
+@use '~@public-ui/components/index' as *;
 
 @layer kol-theme-component {
-	:host {
-		display: inline-block;
-		font-family: var(--font-family);
-	}
+	.kol-badge {
+		border-radius: 4px;
+		min-height: to-rem(32);
+		border: 1px solid currentColor;
 
-	:host > span {
-		border-radius: var(--border-radius);
-		display: inline-flex;
-		font-style: normal;
-	}
+		.kol-icon__icon {
+			width: to-rem(24);
+			height: to-rem(24);
+		}
 
-	:host > span.smart-button {
-		align-items: center;
-	}
+		&--has-smart-button {
+			align-items: center;
+		}
 
-	:host > span .kol-button-wc:hover > button {
-		background-color: var(--color-primary-variant);
-		color: var(--color-light);
-	}
+		&__label {
+			align-items: center;
 
-	:host > span .kol-button-wc > button {
-		color: inherit;
-		border-top-right-radius: var(--border-radius);
-		border-bottom-right-radius: var(--border-radius);
-		padding: rem(3.2);
-	}
+			font-size: to-rem(16);
+			font-weight: 500;
+			line-height: to-rem(24);
+			letter-spacing: 0;
+			font-style: normal;
 
-	:host > span .kol-span-wc {
-		padding: rem(4) rem(12);
-	}
+			.kol-span__container {
+				display: flex;
+				display: inline-flex;
+				padding: to-rem(2) to-rem(16) to-rem(2) to-rem(12);
+				gap: to-rem(4);
+				align-items: center;
+			}
+		}
 
-	:host > span > .kol-span-wc {
-		align-items: center;
-		font-style: normal;
-		gap: rem(8);
-	}
-
-	:host > span > .kol-span-wc > span {
-		display: flex;
-		gap: rem(4);
+		// should be included in the basis styling of the component package
+		&__smart-button {
+			button {
+				color: inherit;
+			}
+		}
 	}
 }

@@ -1,15 +1,13 @@
-@use './rem' as *;
+@mixin focus-outline($angularBorder: false) {
+	@if $angularBorder {
+		border-radius: 0;
+	} @else {
+		border-radius: var(--kern-metric-border-radius-default);
+	}
 
-@mixin focus-outline {
-	border-radius: var(--border-radius);
-	outline-offset: 2px;
-	outline: var(--color-primary-variant) solid rem(3);
-	transition: 200ms outline-offset linear;
-}
-
-@mixin switch-outline {
-	outline-color: var(--color-primary);
-	outline-offset: 2px;
-	outline-style: solid;
-	outline-width: 2px;
+	box-shadow:
+		0 0 0 2px var(--kern-color-action-on-default),
+		0 0 0 4px var(--kern-color-action-focus-border-inside),
+		0 0 0 6px var(--kern-color-action-focus-border-outside);
+	outline: 0;
 }

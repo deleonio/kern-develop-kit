@@ -1,34 +1,9 @@
-@use '../mixins/rem' as *;
+@use '../mixins/card' as *;
 
 @layer kol-theme-component {
-	:host {
-		font-family: var(--font-family);
-	}
+	@include card('kol-card');
 
-	:host > div {
-		display: grid;
-		width: 100%;
-		height: 100%;
-		background-color: var(--color-light);
-		grid-template-rows: min-content 2fr min-content;
-		box-shadow: 0 0 4px color-mix(in srgb, black 80%, var(--color-subtle)); // darken by 80% to maintain contrast of 3:1
-		border-radius: var(--border-radius);
-	}
-
-	:host .kol-heading-wc {
-		line-height: 1.75;
-	}
-
-	:host div.header {
-		padding: rem(16) rem(16) rem(8) rem(16);
-	}
-
-	:host div.content {
-		padding: rem(8) rem(16) rem(16);
-		overflow: hidden;
-	}
-
-	:host div.footer {
-		padding: rem(8) rem(16);
+	.kol-card {
+		--kol-card-border-radius: var(--kern-metric-border-radius-default);
 	}
 }

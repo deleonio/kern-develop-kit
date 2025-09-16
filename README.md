@@ -1,74 +1,170 @@
-# KERN – KoliBri-Kit
+> [English version](./README.en.md)
 
-This is the default theme for the [Public UI web component library](https://public-ui.github.io). You can customize this theme by using `css variables` or by creating a new theme.
+# KERN UX-Standard Theme für KoliBri
 
-## Integration in React
+Ein benutzerdefiniertes Theme für die barrierefreie Komponentenbibliothek [KoliBri](https://github.com/public-ui/kolibri), dass das KERN-UX Design System implementiert.
 
-```tsx
-import { register } from '@public-ui/components';
-import { defineCustomElements } from '@public-ui/components/dist/loader';
-import { YOUR_THEME } from '@your/kolibri-theme';
+## Warum KoliBri für KERN verwenden?
 
-register(YOUR_THEME, defineCustomElements).then(() => {
-	ReactDOM.createRoot(document.getElementById('root')!).render(
-		<React.StrictMode>
-			<App />
-		</React.StrictMode>,
-	);
-});
+**Barrierefreiheit ist wichtig.** Aber es ist schwer, alles richtig zu machen.
+
+KoliBri macht es einfacher:
+
+- **Bereits barrierefrei**: Alle Komponenten sind schon barrierefrei gebaut
+- **Gut getestet**: Experten haben die Barrierefreiheit geprüft
+- **Einfach zu nutzen**: Sie müssen nicht alles selbst programmieren
+- **KERN Design**: Durch dieses Theme sehen die Komponenten aus wie KERN es vorgibt
+
+**Das bedeutet für Sie:**
+
+- Weniger Arbeit beim Programmieren
+- Sicher sein, dass alles barrierefrei ist
+- Mehr Zeit für wichtige Funktionen
+- Automatisch das richtige KERN-Design
+
+KERN nutzt KoliBri, weil die Komponenten "headless" sind. Das heißt: Die Barrierefreiheit funktioniert schon. Wir geben "nur" das KERN-Design dazu.
+
+## Installation
+
+```bash
+npm install @kern-ux/theme-kolibri @public-ui/components
 ```
 
-## Full documentation
+### Assets kopieren
 
-👉 [https://public-ui.github.io](https://public-ui.github.io)
+Das Theme-Paket und die KoliBri-Komponenten enthalten wichtige Assets (Schriftarten und Icons), die in Ihr Projekt kopiert werden müssen. Für eine betriebssystemunabhängige Lösung empfehlen wir die Verwendung des `cpy-cli` Pakets:
 
-## Usage (DE)
-
-Das Default-Theme ist ein _Token-Based_ Theme, das mit minimalen Anpassungen sofort verwendet werden kann. Es bringt bereits alle notwendigen Stylings mit und kann
-über Design Tokens, in Form von _CSS Custom Properties_ an das eigene Design angepasst werden.
-
-### Variablen
-
-| Variable                          | Standard-Wert                                    | Bedeutung                                          |
-| --------------------------------- | ------------------------------------------------ | -------------------------------------------------- |
-| `--kolibri-border-radius`         | `5px`                                            | Border-Radius für abgerundete Elemente             |
-| `--kolibri-font-family`           | `Verdana, Arial, Calibri, Helvetica, sans-serif` | Allgemeine Schriftart                              |
-| `--kolibri-font-size`             | `16px`                                           | Allgemeine Schriftgröße                            |
-| `--kolibri-spacing`               | `0.25rem`                                        | Allgemeiner Abstand zwischen Elementen             |
-| `--kolibri-border-width`          | `1px`                                            | Allgemeine Rahmen-Breite                           |
-| `--kolibri-color-primary`         | `#004b76`                                        | Primärfarbe                                        |
-| `--kolibri-color-primary-variant` | `#0077b6`                                        | Alternative Variante der Primärfarbe               |
-| `--kolibri-color-danger`          | `#c0003c`                                        | Farbe für Fehlermeldungen und gefährliche Aktionen |
-| `--kolibri-color-warning`         | `#c44931`                                        | Farbe für Warnungen                                |
-| `--kolibri-color-success`         | `#005c45`                                        | Farbe für Erfolgsmeldungen                         |
-| `--kolibri-color-subtle`          | `#576164`                                        | Farbe für feine Akzente wie z.B. Rahmen            |
-| `--kolibri-color-light`           | `#ffffff`                                        | Helle Farbe für z.B. Hintergründe                  |
-| `--kolibri-color-text`            | `#202020`                                        | Textfarbe                                          |
-| `--kolibri-color-mute`            | `#f2f3f4`                                        | Farbe für deaktivierte Elemente                    |
-| `--kolibri-color-mute-variant`    | `#bec5c9`                                        | Alternative Farbe für deaktivierte Elemente        |
-
-### Verwendung
-
-Theme importieren und registrieren:
-
-```js
-import { register } from '@public-ui/components';
-import { defineCustomElements } from '@public-ui/components/dist/loader';
-import { YOUR_THEME } from '@your/kolibri-theme';
-
-register(YOUR_THEME, defineCustomElements);
+```bash
+npm install --save-dev cpy-cli
 ```
 
-Für mehr Details und weitere Optionen siehe [Erste Schritte](https://public-ui.github.io/docs/get-started/first-steps#einbinden-in-ein-bestehendes-projekt).
+Erstellen Sie dann npm-Scripts in Ihrer `package.json`:
 
-Um die _Design Tokens_ anzupassen, reicht ein einfaches Stylesheet, das die gewünschten Custom Properties überschreibt. Es ist dabei nicht notwendig, alle Properties zu setzen, sondern nur solche, die auch überschrieben werden sollen. Beispiel:
-
-```css
-:root {
-	--kolibri-border-radius: 3px;
-	--kolibri-font-size: 18px;
-	--kolibri-spacing: 0.3rem;
-	--kolibri-color-primary: #cc006e;
-	--kolibri-color-primary-variant: #ff64b9;
+```json
+{
+	"scripts": {
+		"postinstall": "npm run copy-assets",
+		"copy-assets": "npm run copy-kern-assets && npm run copy-kolibri-assets",
+		"copy-kern-assets": "cpy 'node_modules/@kern-ux/theme-kolibri/assets/**' 'public/assets/theme' --parents",
+		"copy-kolibri-assets": "cpy 'node_modules/@public-ui/components/assets/**' 'public/assets/theme' --parents"
+	}
 }
 ```
+
+**Wichtig:** Fügen Sie den Theme-Assets-Ordner zu Ihrer `.gitignore` hinzu, da diese Dateien bei jedem `npm install` automatisch kopiert werden:
+
+```gitignore
+# Theme Assets (werden automatisch kopiert)
+public/assets/theme/
+```
+
+### Assets einbinden
+
+Nach dem Kopieren der Assets müssen diese in Ihrer Anwendung eingebunden werden:
+
+#### Option 1: Einbindung über HTML
+
+```html
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KERN UX Theme Demo</title>
+
+		<!-- KERN Theme Assets -->
+		<link rel="stylesheet" href="/assets/theme/material-symbols-subset/style.css" />
+		<link rel="stylesheet" href="/assets/theme/fira-sans-v17-latin/style.css" />
+
+		<!-- KoliBri Assets (falls benötigt) -->
+		<link rel="stylesheet" href="/assets/theme/codicon.css" />
+	</head>
+	<body>
+		<!-- Ihre KoliBri-Komponenten -->
+	</body>
+</html>
+```
+
+#### Option 2: Einbindung über SCSS/CSS
+
+```scss
+// In Ihrer main.scss oder styles.scss
+@import url('/assets/theme/material-symbols-subset/style.css');
+@import url('/assets/theme/fira-sans-v17-latin/style.css');
+
+// KoliBri Assets (falls benötigt)
+@import url('/assets/theme/codicon.css');
+```
+
+## Verwendung
+
+```typescript
+import { register } from '@public-ui/components';
+import { THEME_KERN } from '@kern-ux/theme-kolibri';
+import { defineCustomElements } from '@public-ui/components/loader';
+
+register(THEME_KERN, defineCustomElements)
+	.then(() => {
+		// KERN-Theme und
+		// KoliBri-Komponenten sind geladen
+	})
+	.catch(console.warn);
+```
+
+## Features
+
+- 🎨 **Kern Design System** - Offizielle Kern Styling-Richtlinien
+- ♿ **Barrierefrei** - WCAG-konforme Styles mit korrekten Kontrastverhältnissen
+- 📱 **Responsive** - Mobile-First-Ansatz
+- 🔧 **CSS Layers** - Moderne Layer-Architektur für bessere Wartbarkeit
+
+## Hinweise zum Theming
+
+Beim Einsatz von Adaptive Styles können globale `CSS` Custom Properties mit denen der Anwendung kollidieren. Nutze für interne Berechnungen bevorzugt `SASS`-Variablen und gib nur klar geprefixte `CSS`-Properties nach außen.
+
+## Entwicklung
+
+### HTML-Verwendung
+
+Nach der Installation können Sie die KoliBri-Komponenten mit dem KERN-Theme direkt in HTML verwenden:
+
+```html
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KERN UX Theme Demo</title>
+	</head>
+	<body>
+		<kol-button _label="KERN Button"></kol-button>
+		<kol-input-text _label="Name" _placeholder="Ihr Name"></kol-input-text>
+		<kol-card _headline="KERN Card"> Inhalt der Karte mit KERN Styling </kol-card>
+
+		<script type="module">
+			import { register } from '@public-ui/components';
+			import { THEME_KERN } from '@kern-ux/theme-kolibri';
+			import { defineCustomElements } from '@public-ui/components/loader';
+
+			register(THEME_KERN, defineCustomElements)
+				.then(() => {
+					console.log('KERN Theme erfolgreich geladen');
+				})
+				.catch(console.warn);
+		</script>
+	</body>
+</html>
+```
+
+## Unterstützung
+
+Bei Problemen während der Entwicklung oder dem Build-Prozess schauen Sie bitte in die [CONTRIBUTING.md](./CONTRIBUTING.md) für detaillierte Lösungsansätze.
+
+## Lizenz
+
+Dieses Projekt steht unter der [European Union Public Licence (EUPL) v1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12). Die EUPL ist eine Open-Source-Lizenz, die von der Europäischen Kommission entwickelt wurde und mit anderen bekannten Open-Source-Lizenzen kompatibel ist.
+
+## Verwandte Projekte
+
+- [KERN UX-Standard](https://www.kern-ux.de)
+- [KoliBri - Der barrierefreie HTML-Standard](https://public-ui.github.io/)

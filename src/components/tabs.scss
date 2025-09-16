@@ -1,176 +1,36 @@
-@use '../mixins/rem' as *;
+@use '~@public-ui/components/index' as *;
+@use '../mixins/button' as *;
+@use '../mixins/focus-outline' as *;
 
 @layer kol-theme-component {
-	:host {
-		font-family: var(--font-family);
-	}
+	.kol-tabs {
+		@include button('kol-button');
+		@include ghostButton('kol-button');
 
-	:host .tabs-button-group {
-		display: inline-flex;
-		gap: rem(32);
-		flex-wrap: wrap;
-	}
+		&__button-group {
+			display: flex;
+			gap: var(--kern-metric-space-small);
+			border-bottom: 1px solid var(--kern-color-action-default);
 
-	button {
-		box-sizing: border-box;
-		background-color: transparent;
-		border: 0;
-		border-radius: var(--border-radius);
-		font-style: normal;
-		font-weight: 700;
-		font-size: rem(18);
-		line-height: 1.2;
-		min-height: var(--a11y-min-size);
-		min-width: var(--a11y-min-size);
-		color: var(--color-subtle);
-		padding: 0;
-	}
+			.kol-button {
+				&.kol-button--normal {
+					text-decoration: none;
+				}
 
-	button:hover {
-		color: var(--color-primary);
-	}
+				&:focus-visible {
+					@include focus-outline($angularBorder: true);
+				}
 
-	button.primary,
-	button.selected {
-		color: var(--color-primary);
-	}
+				&.selected {
+					border-bottom-color: var(--kern-color-action-default);
 
-	button:not(.selected) .kol-span-wc > span {
-		padding-bottom: 0.25em;
-	}
+					text-decoration: none;
+				}
+			}
+		}
 
-	button.selected .kol-span-wc > span {
-		border-bottom: 0.25em solid;
-	}
-
-	button .kol-span-wc > span {
-		gap: rem(8);
-	}
-
-	.kol-icon {
-		font-size: rem(16);
-	}
-
-	.tabs-content {
-		padding: 0.25em 0;
-	}
-
-	div[role='tabpanel'] {
-		height: 100%;
-	}
-
-	div.grid {
-		height: 100%;
-	}
-
-	:host > .tabs-align-right {
-		display: grid;
-		grid-template-columns: 1fr auto;
-	}
-
-	:host > .tabs-align-right .tabs-button-group {
-		display: grid;
-		order: 2;
-	}
-
-	:host > .tabs-align-left {
-		display: grid;
-		grid-template-columns: auto 1fr;
-	}
-
-	:host > .tabs-align-left .tabs-button-group {
-		display: grid;
-		order: 0;
-	}
-
-	:host > .tabs-align-bottom {
-		display: grid;
-		grid-template-rows: 1fr auto;
-	}
-
-	:host > .tabs-align-bottom .tabs-button-group {
-		order: 2;
-	}
-
-	:host > .tabs-align-bottom .tabs-button-group > div {
-		display: flex;
-	}
-
-	:host > .tabs-align-bottom > .tabs-button-group > div > div:first-child {
-		margin: 0 rem(16) 0 0;
-	}
-
-	:host > .tabs-align-bottom > .tabs-button-group > div > div {
-		margin: 0 rem(16);
-	}
-
-	:host > .tabs-align-top {
-		display: grid;
-		grid-template-rows: auto 1fr;
-	}
-
-	:host > .tabs-align-top .tabs-button-group {
-		order: 0;
-	}
-
-	:host > .tabs-align-top .tabs-button-group > div {
-		display: flex;
-	}
-
-	:host > .tabs-align-top > .tabs-button-group > div > div:first-child {
-		margin: 0 rem(16) 0 0;
-	}
-
-	:host > .tabs-align-top > .tabs-button-group > div > div {
-		margin: 0 rem(16);
-	}
-
-	:host > div {
-		display: grid;
-	}
-
-	:host > div.tabs-align-left {
-		grid-template-columns: auto 1fr;
-	}
-
-	:host > div.tabs-align-right {
-		grid-template-columns: 1fr auto;
-	}
-
-	:host > .tabs-align-left .tabs-button-group,
-	:host > .tabs-align-top .tabs-button-group {
-		order: 0;
-	}
-
-	:host > .tabs-align-bottom .tabs-button-group,
-	:host > .tabs-align-right .tabs-button-group {
-		order: 1;
-	}
-
-	:host > .tabs-align-left .tabs-button-group,
-	:host > .tabs-align-right .tabs-button-group {
-		gap: inherit;
-	}
-
-	:host > div.tabs-align-left .tabs-button-group > div,
-	:host > div.tabs-align-left .tabs-button-group > div > div,
-	:host > div.tabs-align-right .tabs-button-group > div,
-	:host > div.tabs-align-right .tabs-button-group > div > div {
-		display: grid;
-	}
-
-	:host > div.tabs-align-left .tabs-button-group > div > div .kol-button-wc,
-	:host > div.tabs-align-right .tabs-button-group > div > div .kol-button-wc {
-		width: 100%;
-	}
-
-	:host > div.tabs-align-bottom .tabs-button-group div,
-	:host > div.tabs-align-top .tabs-button-group div {
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	:host .tabs-button-group button {
-		border: none;
+		&__content {
+			padding-top: var(--kern-metric-space-large);
+		}
 	}
 }

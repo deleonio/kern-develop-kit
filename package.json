@@ -1,49 +1,77 @@
 {
-	"name": "@kern-ux/kern-webcomponents-kit",
-	"version": "0.0.0",
+	"name": "@kern-ux/theme-kolibri",
+	"version": "2.3.0-rc.0",
+	"description": "This package contains the KERN-UX style information to make KoliBri web components look as specified by the KERN UX design system.",
 	"license": "EUPL-1.2",
+	"homepage": "https://www.kern-ux.de",
+	"author": "Kern-UX",
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.opencode.de/kern-ux/kern-ux-developer-kit"
+	},
+	"bugs": {
+		"url": "https://gitlab.opencode.de/kern-ux/kern-ux-developer-kit/-/issues"
+	},
+	"contributors": [
+		"Darko Pervan <darko.pervan@dataport.de>",
+		"Tom Marienfeld <tom.marienfeld@dataport.de>"
+	],
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
 		"build": "rollup -c",
+		"clean": "git clean -f -d -X",
 		"dev": "rollup -c --watch",
-		"format": "prettier --check src",
-		"lint": "tsc --noemit && eslint src",
-		"prepare": "cpy \"node_modules/@public-ui/components/assets/**/*\" assets --dot",
+		"format": "prettier --check .",
+		"lint": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:tsc",
+		"lint:eslint": "eslint src",
+		"lint:stylelint": "stylelint \"src/**/*.{css,scss}\"",
+		"lint:tsc": "tsc --noemit",
+		"prepack": "pnpm build",
 		"start": "npm-run-all2 --parallel dev serve",
-		"serve": "sh serve.sh YOUR_THEME",
-		"test": "cross-env KOLIBRI_VISUAL_TESTS_EXPECT_TIMEOUT=15000 KOLIBRI_VISUAL_TESTS_TIMEOUT=15000 THEME_MODULE=dist THEME_EXPORT=YOUR_THEME kolibri-visual-test",
-		"test-update": "cross-env KOLIBRI_VISUAL_TESTS_EXPECT_TIMEOUT=15000 KOLIBRI_VISUAL_TESTS_TIMEOUT=15000 THEME_MODULE=dist THEME_EXPORT=YOUR_THEME kolibri-visual-test --update-snapshots theme-snapshots.spec.js",
+		"serve": "sh serve.sh",
+		"smoke-test": "pnpm clean && pnpm install && pnpm build && pnpm format && pnpm lint && pnpm unused && pnpm test",
+		"test": "cross-env THEME_MODULE=dist THEME_EXPORT=KERN_V2 THEME_CSS=$(pwd)/inject-assets.css kolibri-visual-test theme-snapshots.spec.js",
+		"test-update": "cross-env THEME_MODULE=dist THEME_EXPORT=KERN_V2 THEME_CSS=$(pwd)/inject-assets.css kolibri-visual-test --update-snapshots=changed theme-snapshots.spec.js",
 		"pretest": "pnpm build",
 		"pretest-update": "pnpm build",
-		"unused": "knip"
+		"unused": "knip",
+		"update": "ncu -t minor -u && ncu"
 	},
 	"devDependencies": {
-		"@public-ui/components": "2.2.10",
-		"@public-ui/sample-react": "2.2.10",
-		"@public-ui/visual-tests": "2.2.10",
-		"@rollup/plugin-commonjs": "28.0.3",
+		"@eslint/eslintrc": "3.3.1",
+		"@eslint/js": "9.35.0",
+		"@kern-ux/native": "2.3.0",
+		"@playwright/test": "1.55.0",
+		"@public-ui/components": "3.0.5",
+		"@public-ui/visual-tests": "3.0.5",
+		"@rollup/plugin-commonjs": "28.0.6",
 		"@rollup/plugin-node-resolve": "16.0.1",
-		"@rollup/plugin-typescript": "12.1.2",
-		"@typescript-eslint/eslint-plugin": "7.18.0",
-		"@typescript-eslint/parser": "7.18.0",
-		"adopted-style-sheets": "1.1.8",
-		"cpy-cli": "5.0.0",
-		"cross-env": "7.0.3",
-		"eslint": "8.57.1",
-		"knip": "5.50.5",
+		"@rollup/plugin-typescript": "12.1.4",
+		"@typescript-eslint/eslint-plugin": "8.43.0",
+		"@typescript-eslint/parser": "8.43.0",
+		"adopted-style-sheets": "1.1.9-rc.20",
+		"autoprefixer": "10.4.21",
+		"cross-env": "10.0.0",
+		"eslint": "9.35.0",
+		"knip": "5.63.1",
 		"nodemon": "3.1.10",
-		"npm-run-all2": "7.0.2",
-		"prettier": "3.5.3",
-		"postcss": "8.5.3",
-		"rollup": "4.40.1",
+		"npm-check-updates": "18.1.0",
+		"npm-run-all2": "8.0.4",
+		"postcss": "8.5.6",
+		"prettier": "3.6.2",
+		"rollup": "4.50.1",
 		"rollup-plugin-postcss": "4.0.2",
-		"sass-embedded": "1.87.0",
-		"typescript": "5.8.3",
-		"unbuild": "3.5.0"
+		"sass": "1.92.1",
+		"stylelint": "16.24.0",
+		"stylelint-config-recommended-scss": "16.0.0",
+		"stylelint-config-standard": "39.0.0",
+		"stylelint-order": "7.0.0",
+		"stylelint-scss": "6.12.1",
+		"typescript": "5.9.2"
 	},
 	"peerDependencies": {
-		"@public-ui/components": "2.2.10"
+		"@public-ui/components": "3.0.5"
 	},
 	"exports": {
 		".": {
@@ -57,11 +85,16 @@
 	"types": "./dist/index.d.ts",
 	"files": [
 		"assets",
-		"dist"
+		"dist",
+		"CONTRIBUTING.en.md",
+		"CONTRIBUTING.md",
+		"README.en.md",
+		"README.md"
 	],
 	"engines": {
-		"node": "^22",
-		"npm": "^10",
 		"pnpm": "^10"
-	}
+	},
+	"browserslist": [
+		"last 2 versions"
+	]
 }

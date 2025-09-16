@@ -2,6 +2,9 @@ import typescript from '@rollup/plugin-typescript';
 import postcss from 'rollup-plugin-postcss';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export default {
 	input: 'src/index.ts',
@@ -22,7 +25,7 @@ export default {
 		nodeResolve(),
 		commonjs(),
 		postcss({
-			plugins: [],
+			plugins: [require('autoprefixer')],
 			inject: false,
 			use: {
 				sass: {

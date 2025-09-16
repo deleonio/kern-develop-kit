@@ -1,8 +1,13 @@
-@mixin badge-text-hint {
+@mixin badge-text-hint($bg-color, $text-color) {
 	.badge-text-hint {
-		background-color: var(--color-mute-variant);
-		border-radius: 3px;
-		color: var(--color-text);
+		color: $text-color;
+		background-color: $bg-color;
+		border-radius: var(--kern-metric-border-radius-default);
 		padding: 0 0.3em;
+
+		.kol-span & {
+			// kol-span is a flex-element without white space between elements
+			margin-left: 0.25em;
+		}
 	}
 }

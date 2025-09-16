@@ -1,7 +1,7 @@
-assets/
 dist/
 node_modules/
 test-results/
 
-# But not these files...
-!assets/README.md
+.DS_Store
+*.log
+*.tgz

@@ -1,0 +1,51 @@
+name: CI-Pipeline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'develop'
+      - 'main'
+      - 'release/*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - name: Setup Node with pnpm cache
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright
+        run: pnpm exec playwright install
+      - name: Format
+        run: pnpm format
+      - name: Lint
+        run: pnpm lint
+      - name: Unused
+        run: pnpm unused
+      - name: Build
+        run: pnpm build
+      - name: Test
+        run: pnpm test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        name: Upload test reports
+        with:
+          name: reports
+          path: |
+            test-results/**/*.png
+            !**/node_modules

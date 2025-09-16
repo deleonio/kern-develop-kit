@@ -1,2 +1,5 @@
-**/assets/**
-src/components.d.ts
+/.pnpm-store/**
+/assets/**
+/node_modules/**
+/src/kern/**
+/pnpm-lock.yaml
