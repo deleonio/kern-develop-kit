@@ -1,5 +1,5 @@
-import stylelint from 'stylelint';
 import path from 'path';
+import stylelint from 'stylelint';
 
 const ruleName = 'kolibri/require-component-layer';
 const messages = stylelint.utils.ruleMessages(ruleName, {

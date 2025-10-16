@@ -1,12 +1,11 @@
 import { KoliBri } from '@public-ui/components';
-import globalCss from './global.scss';
 import abbrCss from './components/abbr.scss';
 import accordionCss from './components/accordion.scss';
 import alertCss from './components/alert.scss';
 import badgeCss from './components/badge.scss';
 import breadcrumbCss from './components/breadcrumb.scss';
-import buttonCss from './components/button.scss';
 import buttonLinkCss from './components/button-link.scss';
+import buttonCss from './components/button.scss';
 import cardCss from './components/card.scss';
 import ComboboxCss from './components/combobox.scss';
 import detailsCss from './components/details.scss';
@@ -24,8 +23,8 @@ import inputRadioCss from './components/input-radio.scss';
 import inputRangeCss from './components/input-range.scss';
 import inputTextCss from './components/input-text.scss';
 import linkButtonCss from './components/link-button.scss';
-import modalCss from './components/modal.scss';
 import linkCss from './components/link.scss';
+import modalCss from './components/modal.scss';
 import navCss from './components/nav.scss';
 import paginationCss from './components/pagination.scss';
 import popoverButtonCss from './components/popover-button.scss';
@@ -43,6 +42,7 @@ import toastContainerCss from './components/toast-container.scss';
 import toolbarCss from './components/toolbar.scss';
 import treeItemCss from './components/tree-item.scss';
 import treeCss from './components/tree.scss';
+import globalCss from './global.scss';
 
 export const KERN_V2 = KoliBri.createTheme('kern', {
 	GLOBAL: globalCss,

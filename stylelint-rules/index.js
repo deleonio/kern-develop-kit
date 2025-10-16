@@ -1,7 +1,7 @@
+import layerNameConvention from './layer-name-convention.js';
+import noLayerInUtilityFiles from './no-layer-in-utility-files.js';
 import requireComponentLayer from './require-component-layer.js';
 import requireGlobalLayer from './require-global-layer.js';
-import noLayerInUtilityFiles from './no-layer-in-utility-files.js';
-import layerNameConvention from './layer-name-convention.js';
 
 // Export individual plugins - they should be loaded directly in stylelint config
 export default {

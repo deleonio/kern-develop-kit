@@ -1,8 +1,8 @@
-import typescript from '@rollup/plugin-typescript';
-import postcss from 'rollup-plugin-postcss';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
 import { createRequire } from 'module';
+import postcss from 'rollup-plugin-postcss';
 
 const require = createRequire(import.meta.url);
 
