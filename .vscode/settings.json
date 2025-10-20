@@ -37,5 +37,18 @@
 	"javascript.updateImportsOnFileMove.enabled": "always",
 	"typescript.preferences.importModuleSpecifier": "relative",
 	"typescript.updateImportsOnFileMove.enabled": "always",
-	"html.customData": ["./node_modules/@public-ui/components/vscode-custom-data.json"]
+	"html.customData": ["./node_modules/@public-ui/components/vscode-custom-data.json"],
+	// Use Prettier for JSON formatting (respects useTabs: true in prettier.config.js)
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4
+	}
 }
