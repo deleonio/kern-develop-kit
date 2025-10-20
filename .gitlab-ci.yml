@@ -12,7 +12,7 @@
 #   Recommended: Automation token type
 #
 variables:
-  NODE_VERSION: '22.12'
+  NODE_VERSION: '22.20.0'
   PNPM_VERSION: '10'
 
 stages:
