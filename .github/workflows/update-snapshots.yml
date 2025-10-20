@@ -79,7 +79,7 @@ jobs:
         run: pnpm test-update
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Update all snapshots
           file_pattern: 'snapshots/*'
