@@ -1,5 +1,17 @@
 # Contributing to `KoliBri` Theme `KERN UX-Standard`
 
+## Important Git configuration for openCode.de
+
+To avoid push problems with large repositories to openCode.de, please set the following local settings:
+
+```bash
+git config pack.packSizeLimit 5m
+git config pack.window 0
+git config pack.threads 1
+```
+
+These settings help prevent errors when pushing large commits.
+
 Thank you for your interest in contributing to this project! This guide will help you get started.
 
 ## Setting up the development environment

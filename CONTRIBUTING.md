@@ -2,6 +2,18 @@
 
 # Contributing zum `KoliBri` Theme `KERN UX-Standard`
 
+## Wichtige Git-Konfiguration für openCode.de
+
+Um Push-Probleme mit großen Repositories nach openCode.de zu vermeiden, stellen Sie bitte lokal folgende Einstellungen ein:
+
+```bash
+git config pack.packSizeLimit 5m
+git config pack.window 0
+git config pack.threads 1
+```
+
+Diese Einstellungen helfen, Fehler beim Pushen großer Commits zu vermeiden.
+
 Vielen Dank für Ihr Interesse am Beitrag zu diesem Projekt! Diese Anleitung hilft Ihnen beim Einstieg.
 
 ## Entwicklungsumgebung einrichten
