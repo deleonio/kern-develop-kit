@@ -24,6 +24,7 @@
 		"clean": "git clean -f -d -X",
 		"dev": "rollup -c --watch",
 		"format": "prettier --check .",
+		"format:fix": "prettier --write .",
 		"lint": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:tsc",
 		"lint:eslint": "eslint src",
 		"lint:stylelint": "stylelint \"src/**/*.{css,scss}\"",
