@@ -27,8 +27,8 @@ Vielen Dank für Ihr Interesse am Beitrag zu diesem Projekt! Diese Anleitung hil
 
 ```bash
 # Repository klonen
-git clone https://gitlab.opencode.de/kern-ux/[TODO].git
-cd [TODO]
+git clone https://gitlab.opencode.de/kern-ux/kern-developer-kit.git
+cd kern-developer-kit
 
 # Abhängigkeiten installieren
 pnpm install
@@ -36,11 +36,11 @@ pnpm install
 # Playwright-Browser installieren
 pnpm exec playwright install
 
-# Entwicklung starten (Watch & Stories im Browser)
+# Entwicklung starten (Theme Watch & Beispiel-App)
 pnpm start
 ```
 
-Der Start-Befehl baut das Theme permanent im Watch-Modus und stellt die Component-Stories live im Browser dar. So können Sie direkt am CSS-Styling arbeiten und den Fortschritt verfolgen.
+Der Start-Befehl kombiniert `rollup --watch` mit einem lokalen Beispiel auf Basis von `@public-ui/sample-react`. So können Sie die Styles im Kontext einer Anwendung prüfen, während das Theme kontinuierlich neu gebaut wird.
 
 Sind Sie fertig, überprüfen Sie das Ergebnis mit den Snapshot-Tests und checken Sie bei Bedarf aktualisierte Referenz-Snapshots ein:
 
@@ -65,16 +65,19 @@ Dieses Theme verwendet CSS Cascade Layers für vorhersagbares Styling:
 
 ```text
 src/
-├── global.scss              # Globale Theme-Styles (@layer kol-theme-global)
 ├── components/              # Component-Styles (@layer kol-theme-component)
 │   ├── button.scss
 │   ├── input.scss
 │   └── ...
+├── global.scss              # Globale Theme-Styles (@layer kol-theme-global)
+├── global/                  # Zusätzliche globale Styles (z. B. Icons)
+├── kern/                    # Lokale KERN Tokens & Utilities
 ├── mixins/                  # Sass Mixins und Utilities (keine Layer)
-└── @shared/                 # Geteilte Utilities und Helfer (keine Layer)
+├── globals.d.ts             # TypeScript Deklarationen für SCSS-Module
+└── index.ts                 # Theme-Einstiegspunkt (exportiert `KERN_V2`)
 ```
 
-**WICHTIG**: Das Projekt verwendet jetzt das `@kern-ux/native` Package für alle KERN UX-Standards. Keine lokalen KERN-Dateien mehr - alles wird direkt aus dem offiziellen Package importiert.
+**WICHTIG**: Das Projekt nutzt `@kern-ux/native` dort, wo es möglich ist. Da einzelne Token derzeit noch nicht nachnutzbar sind, bleiben lokale Dateien im Ordner `src/kern/` weiterhin Bestandteil des Themes.
 
 ## Styling-Regeln
 
@@ -100,84 +103,7 @@ Custom Stylelint-Regeln stellen ordnungsgemäße Layer-Nutzung sicher:
 		color: black;
 	}
 }
-
-// ❌ Falsch: :root umgeht Web Component Encapsulation
-@layer kol-theme-global {
-	:root {
-		--font-family: var(--kern-font-family); // Löst Lint-Fehler aus
-	}
-}
-```
-
-**Grund**: `:root` Selektoren umgehen die Web Component Shadow DOM Kapselung und können mit Host-Seiten-Styles kollidieren. `:host` sorgt für ordnungsgemäße Isolation innerhalb des Web Component.
-
-### Beispiel-Verwendung
-
-```scss
-// ✅ Korrekt: Component-Datei mit Layer
-// src/components/button.scss
-@layer kol-theme-component {
-	.button {
-		background: var(--kern-color-primary);
-		border-radius: var(--kern-border-radius);
-	}
-}
-
-// ✅ Korrekt: Global-Datei mit Layer und :host
-// src/global.scss
-@layer kol-theme-global {
-	:host {
-		--font-family: var(--kern-font-family);
-	}
-}
-
-// ✅ Korrekt: Utility-Datei ohne Layer
-// src/mixins/typography.scss
-@mixin kern-heading-style {
-	font-family: var(--kern-font-family);
-	font-weight: bold;
-}
-
-// ❌ Falsch: Component-Datei ohne Layer
-// src/components/button.scss
-.button {
-	background: red; // Löst Lint-Fehler aus
-}
-```
-
-## Custom Stylelint Regeln
-
-### Regel-Übersicht
-
-| Regel                                     | Zweck                                         | Gilt für                  |
-| ----------------------------------------- | --------------------------------------------- | ------------------------- |
-| `kolibri/require-component-layer`         | Erzwingt `@layer kol-theme-component` Nutzung | `src/components/*.scss`   |
-| `kolibri/require-global-layer`            | Erzwingt `@layer kol-theme-global` Nutzung    | `src/global.scss`         |
-| `kolibri/no-layer-in-non-component-files` | Verhindert Layer-Nutzung in Utility-Dateien   | Alle anderen SCSS-Dateien |
-| `kolibri/layer-name-convention`           | Warnt vor nicht-standardmäßigen Layer-Namen   | Alle Dateien              |
-| `kolibri/no-root-selector`                | Verhindert `:root` zugunsten von `:host`      | `src/**/*.scss`           |
-
-### Regel-Details
-
-Diese Regeln stellen sicher:
-
-- **100% CSS-Abdeckung** - ALLES CSS muss in entsprechenden Layern sein
-- **Keine Ausnahmen** - Variablen, Selektoren, Deklarationen, At-Rules werden alle geprüft
-- **Klare Trennung** - Components vs. Global vs. Utility Styling
-- **Wartbarkeit** - Vorhersagbares Cascade-Verhalten
-
-## Entwicklungsworkflow
-
-### Neue Component-Styles hinzufügen
-
-1. Component-Datei in `src/components/` erstellen:
-
-```scss
-// src/components/new-component.scss
-@layer kol-theme-component {
-	.new-component {
-		// Ihre Styles hier
-	}
+@@ -169,189 +172,190 @@ Diese Regeln stellen sicher:
 }
 ```
 
@@ -203,7 +129,7 @@ pnpm test
 
 ### Utilities erstellen
 
-Utilities in `src/mixins/` oder `src/@shared/` **ohne** Layer hinzufügen:
+Utilities in `src/mixins/` **ohne** Layer hinzufügen:
 
 ```scss
 // src/mixins/my-utility.scss
@@ -248,7 +174,8 @@ Die Visual Tests benötigen korrekt geladene Assets (Schriftarten und Icons), um
 - **inject-assets.css** - Zentrale Asset-Injektionsdatei mit @import-Anweisungen für:
   - `assets/material-symbols-subset/style.css` - Reduziertes Material Icons Set
   - `assets/fira-sans-v17-latin/style.css` - Fira Sans Schriftfamilie (400-700)
-- **inject-a.css** - Wird vom Build-Prozess generiert und bei Visual Tests via `THEME_CSS` Umgebungsvariable verwendet
+
+Die Visual Tests setzen `THEME_CSS=$(pwd)/inject-assets.css`, um genau diese Datei in die Beispiel-Anwendung zu laden.
 
 **Wichtig**: Ohne korrekt geladene Assets würden Visual Tests fälschlicherweise als "geändert" erkannt, da Fallback-Schriftarten oder fehlende Icons verwendet würden.
 
@@ -292,7 +219,7 @@ pnpm test    # Visual Tests validieren
 - **CSS-Import**: Nutzen Sie `@import '@kern-ux/native/dist/kern.css'` für KERN-Basis
 - **KERN Variablen**: Verwenden Sie `var(--kern-*)` CSS Custom Properties in Theme-Styles
 - **Package Updates**: KERN UX-Standards werden über `pnpm update @kern-ux/native` aktualisiert
-- **Keine lokalen KERN Dateien**: Alle KERN UX-Standards kommen aus dem Package
+- **Lokale Ergänzungen**: Zusätzliche Tokens aus `src/kern/` bleiben aktiv, bis das Package vollständige Abdeckung bietet
 - **CSS-basiert**: Package ist für CSS-Distribution optimiert, nicht für granulare Sass-Imports
 
 ## Konfigurationsdateien
@@ -337,11 +264,11 @@ pnpm test    # Visual Tests validieren
 // @use '@kern-ux/native/src/scss/core/tokens' as kern-tokens; // Nicht unterstützt
 ```
 
-**Migration von lokalem `kern/` zu `@kern-ux/native`:**
+**Zusammenspiel `src/kern/` und `@kern-ux/native`:**
 
-- Lokales `src/kern/` Verzeichnis wurde entfernt
-- Ersetzt durch `@kern-ux/native` Package-Dependency
-- KERN UX-Standards werden über CSS-Import eingebunden
+- `@kern-ux/native` liefert die Standard-KERN-Variablen als CSS-Import
+- `src/kern/` enthält zusätzliche Tokens und Workarounds, die aktuell noch nicht aus dem Package bezogen werden können
+- Halten Sie lokale Tokens schlank und dokumentieren Sie Abweichungen für eine spätere Migration
 - CSS Custom Properties (`--kern-*`) bleiben unverändert nutzbar
 
 ### Typografie

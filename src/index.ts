@@ -44,7 +44,7 @@ import toolbarCss from './components/toolbar.scss';
 import treeItemCss from './components/tree-item.scss';
 import treeCss from './components/tree.scss';
 
-export const KERN_V2 = KoliBri.createTheme('kern', {
+export const KERN_V2 = KoliBri.createTheme('kern-v2', {
 	GLOBAL: globalCss,
 	'KOL-ABBR': abbrCss,
 	'KOL-ACCORDION': accordionCss,

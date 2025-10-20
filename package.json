@@ -7,15 +7,14 @@
   "author": "Kern-UX",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.opencode.de/kern-ux/kern-ux-developer-kit"
+    "url": "https://gitlab.opencode.de/kern-ux/kern-developer-kit"
   },
   "bugs": {
-    "url": "https://gitlab.opencode.de/kern-ux/kern-ux-developer-kit/-/issues"
+    "url": "https://gitlab.opencode.de/kern-ux/kern-developer-kit/-/issues"
   },
   "contributors": [
-    "Darko Pervan <darko.pervan@dataport.de>",
-    "Tom Marienfeld <tom.marienfeld@dataport.de>",
-    "Axel Wolters <axel.wolters@sk.hamburg.de>"
+    "Axel Wolters <axel.wolters@sk.hamburg.de>",
+    "Informationstechnikzentrum Bund <kolibri@itzbund.de>"
   ],
   "type": "module",
   "sideEffects": false,
@@ -24,7 +23,6 @@
     "clean": "git clean -f -d -X",
     "dev": "rollup -c --watch",
     "format": "prettier --check .",
-    "format:fix": "prettier --write .",
     "lint": "pnpm lint:eslint && pnpm lint:stylelint && pnpm lint:tsc",
     "lint:eslint": "eslint src",
     "lint:stylelint": "stylelint \"src/**/*.{css,scss}\"",

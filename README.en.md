@@ -1,314 +1,170 @@
-# KERN UX-Standard Theme for KoliBri
+[German version](./README.md)
+
+# KERN UX standard theme for KoliBri
 
 A custom theme for the accessible component library [KoliBri](https://github.com/public-ui/kolibri) that implements the KERN UX design system.
 
 ## Why use KoliBri for KERN?
 
-**Accessibility is important.** But it's hard to get everything right.
+**Accessibility matters.** But getting every detail right is hard.
 
-**KoliBri is pre-accessible.** By design, the fundamental accessibility aspects are already built into KoliBri.
+KoliBri makes it easier:
 
-**Standardization through the theme.** The theme ensures that all applications using it have a consistent appearance and behavior according to KERN UX standards.
+- **Accessible out of the box** – all components are built with accessibility in mind
+- **Well tested** – accessibility has been reviewed by experts
+- **Easy to use** – you don’t have to implement everything yourself
+- **KERN design** – this theme provides the official KERN look & feel
 
-> This theme is currently **under development** and follows the KERN UX 2.0 Design System. For the previous version (UX 1.5), see the [legacy branch](https://gitlab.opencode.de/kern-ux/kolibri-theme-kern/-/tree/legacy).
+**What this means for you:**
 
-### Key features
+- Less implementation effort
+- Confidence that the result is accessible
+- More time for core features
+- Automatic KERN styling
 
-- 📱 **Responsive Design** - Optimized for all screen sizes
-- 🎨 **KERN Design System** - Full implementation of KERN UX 2.0 standards
-- ♿ **Accessibility** - WCAG 2.1 AA compliant by default
-- 🧩 **Component Library** - 50+ ready-to-use components
-- 🎭 **Theming** - CSS custom properties for easy customization
-- 📦 **Multiple Distribution Formats** - ESM, CommonJS, UMD, and CSS-only
-- 🚀 **Production Ready** - Tested and used in government applications
+KERN uses KoliBri because the components are “headless”. Accessibility is already solved – this theme simply adds the KERN design.
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
-npm install @kern-ux/theme-kolibri
+npm install @kern-ux/theme-kolibri @public-ui/components
 ```
 
-### Usage
+### Copy assets
 
-#### Option 1: Direct CSS Import
+The theme package and the KoliBri components ship important assets (fonts and icons) that must be copied into your project. For a cross-platform solution we recommend the `cpy-cli` package:
 
-```css
-@import '@kern-ux/theme-kolibri/dist/theme.css';
+```bash
+npm install --save-dev cpy-cli
 ```
 
-#### Option 2: JavaScript/TypeScript
+Then create npm scripts in your `package.json`:
 
-```javascript
-import '@kern-ux/theme-kolibri';
+```json
+{
+	"scripts": {
+		"postinstall": "npm run copy-assets",
+		"copy-assets": "npm run copy-kern-assets && npm run copy-kolibri-assets",
+		"copy-kern-assets": "cpy 'node_modules/@kern-ux/theme-kolibri/assets/**' 'public/assets/theme' --parents",
+		"copy-kolibri-assets": "cpy 'node_modules/@public-ui/components/assets/**' 'public/assets/theme' --parents"
+	}
+}
 ```
 
-#### Option 3: HTML
+**Important:** add the theme asset folder to your `.gitignore`, because the files are copied automatically on every `npm install`:
 
-```html
-<link rel="stylesheet" href="path/to/@kern-ux/theme-kolibri/dist/theme.css" />
+```gitignore
+# Theme assets (copied automatically)
+public/assets/theme/
 ```
 
-### Basic Example
+### Include assets
+
+After copying the assets you need to include them in your application:
+
+#### Option 1: include via HTML
 
 ```html
 <!doctype html>
-<html lang="de">
+<html lang="en">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>KERN KoliBri Application</title>
-		<link rel="stylesheet" href="@kern-ux/theme-kolibri/dist/theme.css" />
-		<script type="module" src="@public-ui/components/dist/kolibri/kolibri.esm.js"></script>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KERN UX Theme Demo</title>
+
+		<!-- KERN theme assets -->
+		<link rel="stylesheet" href="/assets/theme/material-symbols-subset/style.css" />
+		<link rel="stylesheet" href="/assets/theme/fira-sans-v17-latin/style.css" />
+
+		<!-- KoliBri assets (if required) -->
+		<link rel="stylesheet" href="/assets/theme/codicon.css" />
 	</head>
 	<body>
-		<kol-heading _level="1">Welcome to KERN UX</kol-heading>
-		<kol-button _label="Primary Action" _variant="primary"></kol-button>
-		<kol-input-text _label="Your Name" _placeholder="Enter your name"></kol-input-text>
+		<!-- Your KoliBri components -->
 	</body>
 </html>
 ```
 
-## Framework Integration
+#### Option 2: include via SCSS/CSS
 
-### Angular
+```scss
+// In your main.scss or styles.scss
+@import url('/assets/theme/material-symbols-subset/style.css');
+@import url('/assets/theme/fira-sans-v17-latin/style.css');
+
+// KoliBri assets (if required)
+@import url('/assets/theme/codicon.css');
+```
+
+## Usage
 
 ```typescript
-// app.module.ts
-import { NgModule } from '@angular/core';
-import { KoliBriModule } from '@public-ui/angular';
-import '@kern-ux/theme-kolibri';
+import { register } from '@public-ui/components';
+import { KERN_V2 } from '@kern-ux/theme-kolibri';
+import { defineCustomElements } from '@public-ui/components/loader';
 
-@NgModule({
-	imports: [KoliBriModule],
-	// ...
-})
-export class AppModule {}
+register(KERN_V2, defineCustomElements)
+	.then(() => {
+		// KERN theme "kern-v2" and
+		// KoliBri components are ready
+	})
+	.catch(console.warn);
 ```
 
-### React
+## Features
 
-```jsx
-// App.tsx
-import React from 'react';
-import { KolButton, KolHeading } from '@public-ui/react';
-import '@kern-ux/theme-kolibri';
+- 🎨 **KERN Design System** – official KERN styling guidelines
+- ♿ **Accessible** – WCAG compliant styles with proper contrast ratios
+- 📱 **Responsive** – mobile-first styling
+- 🔧 **CSS layers** – modern layer architecture for maintainability
 
-export function App() {
-	return (
-		<div>
-			<KolHeading _level={1}>My KERN Application</KolHeading>
-			<KolButton _label="Click me" _variant="primary" />
-		</div>
-	);
-}
-```
+## Theming notes
 
-### Vue
-
-```vue
-<!-- App.vue -->
-<template>
-	<div>
-		<KolHeading :_level="1">My KERN Application</KolHeading>
-		<KolButton _label="Click me" _variant="primary" />
-	</div>
-</template>
-
-<script>
-import '@kern-ux/theme-kolibri';
-export default {
-	name: 'App',
-};
-</script>
-```
-
-## Available Components
-
-This theme supports all KoliBri components with KERN UX styling:
-
-### Form Components
-
-- `kol-input-text` - Text input fields
-- `kol-input-email` - Email input with validation
-- `kol-input-password` - Password input with visibility toggle
-- `kol-input-number` - Number input with step controls
-- `kol-select` - Dropdown selection
-- `kol-textarea` - Multi-line text input
-- `kol-checkbox` - Checkbox with custom styling
-- `kol-radio` - Radio buttons
-- `kol-input-file` - File upload component
-
-### Navigation
-
-- `kol-nav` - Main navigation component
-- `kol-breadcrumb` - Breadcrumb navigation
-- `kol-pagination` - Page navigation
-- `kol-link` - Styled links
-- `kol-skip-nav` - Skip navigation for accessibility
-
-### Data Display
-
-- `kol-table` - Data tables with sorting and filtering
-- `kol-card` - Content cards
-- `kol-accordion` - Collapsible content sections
-- `kol-details` - Expandable details component
-- `kol-tabs` - Tab navigation
-
-### Feedback
-
-- `kol-alert` - Alert messages
-- `kol-toast` - Notification toasts
-- `kol-progress` - Progress indicators
-- `kol-spin` - Loading spinners
-
-### Layout
-
-- `kol-heading` - Semantic headings (h1-h6)
-- `kol-button` - Buttons in various styles
-- `kol-image` - Responsive images
-- `kol-icon` - Icon component
-- `kol-badge` - Status badges
-
-For a complete list of components, see the [KoliBri Documentation](https://public-ui.github.io/).
-
-## Customization
-
-### CSS Custom Properties
-
-The theme provides CSS custom properties for easy customization:
-
-```css
-:root {
-	/* Brand colors */
-	--kern-color-primary: #0073e6;
-	--kern-color-secondary: #6c757d;
-	--kern-color-success: #28a745;
-	--kern-color-warning: #ffc107;
-	--kern-color-danger: #dc3545;
-
-	/* Typography */
-	--kern-font-family: 'Fira Sans', Arial, sans-serif;
-	--kern-font-size-base: 1rem;
-	--kern-line-height-base: 1.5;
-
-	/* Spacing */
-	--kern-spacing-xs: 0.25rem;
-	--kern-spacing-sm: 0.5rem;
-	--kern-spacing-md: 1rem;
-	--kern-spacing-lg: 1.5rem;
-	--kern-spacing-xl: 3rem;
-
-	/* Border radius */
-	--kern-border-radius: 0.25rem;
-	--kern-border-radius-lg: 0.5rem;
-}
-```
-
-### Component-Specific Styling
-
-```css
-/* Customize button appearance */
-kol-button {
-	--button-border-radius: 0.5rem;
-	--button-padding: 0.75rem 1.5rem;
-}
-
-/* Customize input fields */
-kol-input-text {
-	--input-border-color: #ced4da;
-	--input-focus-border-color: var(--kern-color-primary);
-}
-```
+When using adaptive styles, global CSS custom properties can collide with application properties. Prefer `SASS` variables for internal calculations and expose only clearly prefixed CSS properties.
 
 ## Development
 
-### Prerequisites
+### HTML usage
 
-- Node.js 22+
-- pnpm package manager
+After installation you can use the KoliBri components with the KERN theme directly in HTML:
 
-### Setup
+```html
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KERN UX Theme Demo</title>
+	</head>
+	<body>
+		<kol-button _label="KERN Button"></kol-button>
+		<kol-input-text _label="Name" _placeholder="Your name"></kol-input-text>
+		<kol-card _headline="KERN Card"> Content of the card with KERN styling </kol-card>
 
-```bash
-# Clone the repository
-git clone https://gitlab.opencode.de/kern-ux/kolibri-theme-kern.git
-cd kolibri-theme-kern
+		<script type="module">
+			import { register } from '@public-ui/components';
+			import { KERN_V2 } from '@kern-ux/theme-kolibri';
+			import { defineCustomElements } from '@public-ui/components/loader';
 
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm start
+			register(KERN_V2, defineCustomElements)
+				.then(() => {
+					console.log('KERN theme "kern-v2" loaded successfully');
+				})
+				.catch(console.warn);
+		</script>
+	</body>
+</html>
 ```
-
-### Build
-
-```bash
-# Build for production
-pnpm build
-
-# Build in watch mode
-pnpm dev
-```
-
-### Testing
-
-```bash
-# Run visual regression tests
-pnpm test
-
-# Update visual snapshots
-pnpm test-update
-
-# Lint code
-pnpm lint
-
-# Format code
-pnpm format
-```
-
-## Browser Support
-
-- Chrome 99+ (CSS Cascade Layers support)
-- Firefox 97+
-- Safari 15.4+
-- Edge 99+
-
-For older browsers, consider using the [CSS Cascade Layers polyfill](https://github.com/csstools/postcss-cascade-layers).
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.en.md) for details on:
-
-- Setting up the development environment
-- Understanding the CSS Layer architecture
-- Following our coding standards
-- Submitting pull requests
-- Troubleshooting development issues
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Related Projects
-
-- [KoliBri Component Library](https://github.com/public-ui/kolibri) - The base component library
-- [KERN UX Guidelines](https://gitlab.opencode.de/kern-ux) - Design system documentation
-- [KoliBri Documentation](https://public-ui.github.io/) - Component documentation and examples
 
 ## Support
 
-- 📖 [Documentation](https://public-ui.github.io/)
-- 🐛 [Issue Tracker](https://gitlab.opencode.de/kern-ux/kolibri-theme-kern/-/issues)
-- 💬 [Discussions](https://gitlab.opencode.de/kern-ux/kolibri-theme-kern/-/discussions)
-- 📧 [Email Support](mailto:kolibri@itzbund.de)
+If you run into issues during development or the build process, take a look at [CONTRIBUTING.en.md](./CONTRIBUTING.en.md) for detailed troubleshooting guidance.
 
----
+## License
 
-Built with ❤️ by the KERN UX Team
+This project is licensed under the [European Union Public Licence (EUPL) v1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12). The EUPL is an open-source licence developed by the European Commission and is compatible with other well-known open-source licences.
 
-```
+## Related projects
 
-```
+- [KERN UX standard](https://www.kern-ux.de)
+- [KoliBri – the accessible HTML standard](https://public-ui.github.io/)

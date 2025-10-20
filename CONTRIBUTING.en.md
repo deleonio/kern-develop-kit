@@ -1,4 +1,4 @@
-# Contributing to `KoliBri` Theme `KERN UX-Standard`
+[German version](./CONTRIBUTING.md)
 
 ## Important Git configuration for openCode.de
 
@@ -14,7 +14,11 @@ These settings help prevent errors when pushing large commits.
 
 Thank you for your interest in contributing to this project! This guide will help you get started.
 
-## Setting up the development environment
+# Contributing to the `KoliBri` theme `KERN UX-Standard`
+
+Thank you for your interest in contributing to this project! This guide helps you get started.
+
+## Set up the development environment
 
 ### Prerequisites
 
@@ -25,8 +29,8 @@ Thank you for your interest in contributing to this project! This guide will hel
 
 ```bash
 # Clone repository
-git clone https://gitlab.opencode.de/kern-ux/[TODO].git
-cd [TODO]
+git clone https://gitlab.opencode.de/kern-ux/kern-developer-kit.git
+cd kern-developer-kit
 
 # Install dependencies
 pnpm install
@@ -34,24 +38,24 @@ pnpm install
 # Install Playwright browsers
 pnpm exec playwright install
 
-# Start development (Watch & Stories in browser)
+# Start development (theme watch & sample app)
 pnpm start
 ```
 
-The start command builds the theme continuously in watch mode and displays the component stories live in the browser. This allows you to work directly on CSS styling and track progress.
+The start command combines `rollup --watch` with a local example based on `@public-ui/sample-react`. This lets you inspect the styles in the context of an application while the theme is rebuilt continuously.
 
-When you're done, check the result with snapshot tests and check in updated reference snapshots if needed:
+When you are done, validate the result with the snapshot tests and check in updated reference snapshots if required:
 
 ```bash
 pnpm test        # Check snapshots
 pnpm test-update # Update reference snapshots
 ```
 
-## Understanding the architecture
+## Understand the architecture
 
-### CSS Layer structure
+### CSS layer structure
 
-This theme uses CSS Cascade Layers for predictable styling:
+This theme uses CSS cascade layers for predictable styling:
 
 ```scss
 // Layer order (lowest to highest specificity)
@@ -59,31 +63,58 @@ This theme uses CSS Cascade Layers for predictable styling:
 @layer kol-theme-component; // Component-specific styles
 ```
 
-### File organization
+### File organisation
 
 ```text
 src/
-├── global.scss              # Global theme styles (@layer kol-theme-global)
 ├── components/              # Component styles (@layer kol-theme-component)
 │   ├── button.scss
 │   ├── input.scss
 │   └── ...
-├── mixins/                  # Sass Mixins and Utilities (no layers)
-└── @shared/                 # Shared utilities and helpers (no layers)
+├── global.scss              # Global theme styles (@layer kol-theme-global)
+├── global/                  # Additional global styles (e.g. icons)
+├── kern/                    # Local KERN tokens & utilities
+├── mixins/                  # Sass mixins and utilities (no layers)
+├── globals.d.ts             # TypeScript declarations for SCSS modules
+└── index.ts                 # Theme entry point (exports `KERN_V2`)
 ```
 
-**IMPORTANT**: The project now uses the `@kern-ux/native` package for all KERN UX standards. No more local KERN files - everything is imported directly from the official package.
+**IMPORTANT**: The project relies on `@kern-ux/native` wherever possible. Because some tokens are not yet consumable from the package, the local files in `src/kern/` remain part of the theme.
 
 ## Styling rules
 
 ### Layer enforcement
 
-Custom Stylelint rules ensure proper layer usage:
+Custom Stylelint rules ensure correct layer usage:
 
 1. **Component files** (`src/components/*.scss`) **MUST** use `@layer kol-theme-component`
 2. **Global file** (`src/global.scss`) **MUST** use `@layer kol-theme-global`
 3. **Utility files** (mixins, helpers) **MUST NOT** use layers
-4. Only allowed layer names are permitted: `kol-theme-global`, `kol-theme-component`
+4. Only the allowed layer names may be used: `kol-theme-global`, `kol-theme-component`
+
+### Web component encapsulation
+
+**IMPORTANT**: Theme files **MUST** use `:host` instead of `:root` to respect Web Component encapsulation:
+
+```scss
+// ✅ Correct: :host for web component styling
+@layer kol-theme-global {
+	:host {
+		--font-family: var(--kern-font-family);
+		background-color: white;
+		color: black;
+	}
+}
+
+// ❌ Wrong: :root bypasses Web Component encapsulation
+@layer kol-theme-global {
+	:root {
+		--font-family: var(--kern-font-family); // Triggers lint error
+	}
+}
+```
+
+**Reason**: `:root` selectors bypass the Shadow DOM encapsulation of web components and can clash with host page styles. `:host` keeps the styling isolated inside the component.
 
 ### Example usage
 
@@ -97,7 +128,7 @@ Custom Stylelint rules ensure proper layer usage:
 	}
 }
 
-// ✅ Correct: Global file with layer
+// ✅ Correct: Global file with layer and :host
 // src/global.scss
 @layer kol-theme-global {
 	:host {
@@ -129,21 +160,22 @@ Custom Stylelint rules ensure proper layer usage:
 | `kolibri/require-global-layer`            | Enforces `@layer kol-theme-global` usage    | `src/global.scss`       |
 | `kolibri/no-layer-in-non-component-files` | Prevents layer usage in utility files       | All other SCSS files    |
 | `kolibri/layer-name-convention`           | Warns about non-standard layer names        | All files               |
+| `kolibri/no-root-selector`                | Prevents `:root` in favour of `:host`       | `src/**/*.scss`         |
 
 ### Rule details
 
-These rules ensure:
+These rules guarantee:
 
-- **100% CSS coverage** - ALL CSS must be in appropriate layers
-- **No exceptions** - Variables, selectors, declarations, at-rules are all checked
-- **Clear separation** - Components vs. Global vs. Utility styling
-- **Maintainability** - Predictable cascade behavior
+- **100% CSS coverage** – ALL CSS must live in the appropriate layers
+- **No exceptions** – variables, selectors, declarations, at-rules are all validated
+- **Clear separation** – components vs. global vs. utility styling
+- **Maintainability** – predictable cascade behaviour
 
 ## Development workflow
 
-### Adding new component styles
+### Add new component styles
 
-1. Create component file in `src/components/`:
+1. Create a component file in `src/components/`:
 
 ```scss
 // src/components/new-component.scss
@@ -162,9 +194,9 @@ pnpm lint
 pnpm test
 ```
 
-### Changing global styles
+### Change global styles
 
-Edit `src/global.scss` within the global layer:
+Edit `src/global.scss` inside the global layer:
 
 ```scss
 @layer kol-theme-global {
@@ -174,9 +206,9 @@ Edit `src/global.scss` within the global layer:
 }
 ```
 
-### Creating utilities
+### Create utilities
 
-Add utilities in `src/mixins/` or `src/@shared/` **without** layers:
+Add utilities in `src/mixins/` **without** layers:
 
 ```scss
 // src/mixins/my-utility.scss
@@ -197,13 +229,13 @@ pnpm start  # Development server
 ### Production build
 
 ```bash
-pnpm build  # Optimized production build
+pnpm build  # Optimised production build
 ```
 
 ### Build output
 
-- `assets/` - Static assets and fonts
-- `dist/` - Compiled CSS files
+- `assets/` – static assets and fonts
+- `dist/` – compiled CSS files
 
 ## Testing
 
@@ -216,14 +248,15 @@ pnpm test-update # Update visual snapshots
 
 #### Assets and visual tests
 
-Visual tests require correctly loaded assets (fonts and icons) to create meaningful screenshots:
+Visual tests require correctly loaded assets (fonts and icons) to produce meaningful screenshots:
 
-- **inject-assets.css** - Central asset injection file with @import statements for:
-  - `assets/material-symbols-subset/style.css` - Reduced Material Icons set
-  - `assets/fira-sans-v17-latin/style.css` - Fira Sans font family (400-700)
-- **inject-a.css** - Generated by build process and used in visual tests via `THEME_CSS` environment variable
+- **inject-assets.css** – central asset injection file with `@import` statements for:
+  - `assets/material-symbols-subset/style.css` – reduced Material Icons set
+  - `assets/fira-sans-v17-latin/style.css` – Fira Sans font family (400–700)
 
-**Important**: Without correctly loaded assets, visual tests would be falsely detected as "changed" since fallback fonts or missing icons would be used.
+The visual tests set `THEME_CSS=$(pwd)/inject-assets.css` to load this file into the sample application.
+
+**Important**: Without the proper assets the visual tests would appear “changed”, because fallback fonts or missing icons would be used.
 
 ### Code quality
 
@@ -237,7 +270,7 @@ pnpm format      # Prettier formatting
 Always run the complete validation workflow:
 
 ```bash
-pnpm build   # Ensure clean build
+pnpm build   # Ensure a clean build
 pnpm format  # Fix formatting
 pnpm lint    # Check code quality
 pnpm test    # Validate visual tests
@@ -245,28 +278,28 @@ pnpm test    # Validate visual tests
 
 ## Code style
 
-- Use **tabs** for indentation (except Markdown files use spaces)
+- Use **tabs** for indentation (Markdown files use spaces)
 - Line length: **160 characters**
 - Single quotes in SCSS/CSS
-- Follow BEM naming convention for CSS classes
+- Follow the BEM naming convention for CSS classes
 - Use semantic variable names
 
 ## Layer guidelines
 
-1. **Never bypass layer rules** - All CSS must be in appropriate layers
-2. **Component isolation** - Component styles only affect their component
-3. **Global restraint** - Global layer only for theme-wide variables and host styles
-4. **No layer mixing** - Don't mix layered and non-layered CSS in the same file
-5. **Respect KERN UX standards** - Never modify files in `src/kern/`, only use their variables
+1. **Never bypass layer rules** – all CSS must live in the correct layers
+2. **Component isolation** – component styles affect only their component
+3. **Global restraint** – global layer only for theme-wide variables and host styles
+4. **No layer mixing** – don’t mix layered and non-layered CSS in the same file
+5. **Respect KERN UX standards** – never modify files in `src/kern/`, only consume their variables
 
 ## KERN UX integration rules
 
-- **`@kern-ux/native` package**: Official KERN UX standards as external dependency
-- **CSS import**: Use `@import '@kern-ux/native/dist/kern.css'` for KERN base
-- **KERN variables**: Use `var(--kern-*)` CSS custom properties in theme styles
-- **Package updates**: KERN UX standards are updated via `pnpm update @kern-ux/native`
-- **No local KERN files**: All KERN UX standards come from the package
-- **CSS-based**: Package is optimized for CSS distribution, not granular Sass imports
+- **`@kern-ux/native` package** – official KERN UX standards as external dependency
+- **CSS import** – use `@import '@kern-ux/native/dist/kern.css'` for the KERN base
+- **KERN variables** – use `var(--kern-*)` CSS custom properties in theme styles
+- **Package updates** – update KERN UX standards with `pnpm update @kern-ux/native`
+- **Local additions** – extra tokens from `src/kern/` remain active until the package covers them fully
+- **CSS-centric** – the package is optimised for CSS distribution, not granular Sass imports
 
 ## Configuration files
 
@@ -285,16 +318,16 @@ pnpm test    # Validate visual tests
 **KERN design standards are provided via the `@kern-ux/native` package:**
 
 ```scss
-// Import KERN CSS base
+// Import the KERN CSS base
 @import '@kern-ux/native/dist/kern.css';
 ```
 
-**Important architectural decision**: The `@kern-ux/native` package is primarily designed for CSS distribution, not granular Sass imports. Therefore, the complete KERN CSS base is included as a CSS import.
+**Key architectural decision**: the `@kern-ux/native` package is primarily designed for CSS distribution, not granular Sass imports. Therefore the complete KERN CSS base is included as a CSS import.
 
-### Using KERN UX standards
+### Using the KERN UX standards
 
 ```scss
-// ✅ Correct: Use KERN CSS variables in theme components
+// ✅ Correct: use KERN CSS variables in theme components
 @layer kol-theme-component {
 	.button {
 		background: var(--kern-color-primary); // Use KERN variable
@@ -303,32 +336,32 @@ pnpm test    # Validate visual tests
 	}
 }
 
-// ✅ Correct: KERN CSS is imported as base
+// ✅ Correct: import KERN CSS as base
 @import '@kern-ux/native/dist/kern.css';
 
-// ❌ Not available: Granular Sass imports (package limitation)
+// ❌ Not available: granular Sass imports (package limitation)
 // @use '@kern-ux/native/src/scss/core/tokens' as kern-tokens; // Not supported
 ```
 
-**Migration from local `kern/` to `@kern-ux/native`:**
+**Interaction between `src/kern/` and `@kern-ux/native`:**
 
-- Local `src/kern/` directory was removed
-- Replaced with `@kern-ux/native` package dependency
-- KERN UX standards are included via CSS import
-- CSS custom properties (`--kern-*`) remain usable unchanged
+- `@kern-ux/native` supplies the standard KERN variables via CSS import
+- `src/kern/` contains additional tokens and workarounds that the package does not yet provide
+- Keep local tokens lightweight and document deviations for a future migration
+- CSS custom properties (`--kern-*`) remain usable without changes
 
 ### Typography
 
-KERN typography system is provided via the CSS base from `@kern-ux/native`:
+The KERN typography system is supplied via the CSS base from `@kern-ux/native`:
 
 - Font families and weights
 - Heading styles and hierarchy
 - Text sizes and spacing
 
-### Color system
+### Colour system
 
 ```scss
-// Kern color tokens (use only, don't modify!)
+// KERN colour tokens (use only, do not modify!)
 --kern-color-primary: #0073e6;
 --kern-color-secondary: #6c757d;
 --kern-color-success: #28a745;
@@ -336,17 +369,17 @@ KERN typography system is provided via the CSS base from `@kern-ux/native`:
 --kern-color-danger: #dc3545;
 ```
 
-## Bug fixes
+## Troubleshooting
 
 ### Common issues
 
 **Stylelint layer errors:**
 
-```text
+```
 CSS rule "selector" must be inside @layer kol-theme-component
 ```
 
-→ Wrap all CSS in the appropriate layer for the file location
+→ Wrap all CSS in the correct layer for the file location.
 
 **Build errors:**
 
@@ -359,44 +392,42 @@ pnpm build  # Rebuild
 **Visual test errors:**
 
 ```bash
-pnpm test-update  # Update snapshots when changes are intended
+pnpm test-update  # Update snapshots when changes are intentional
 ```
 
 ### Getting help
 
-1. Check the [KERN UX-Standard](https://gitlab.opencode.de/kern-ux)
-2. Review existing component implementations in `src/components/`
-3. Examine the custom Stylelint rules in `stylelint-rules/`
-4. Run `pnpm lint` for specific error messages
+1. Review the [KERN UX-Standard](https://gitlab.opencode.de/kern-ux)
+2. Inspect existing component implementations in `src/components/`
+3. Check the custom Stylelint rules in `stylelint-rules/`
+4. Run `pnpm lint` for detailed error messages
 
-### Service Worker Cache Issues in Chrome
+### Service worker cache issues in Chrome
 
-**Problem:** Assets are not updated despite "Disable cache" being enabled. Chrome continues to load old versions, even after hard reload.
+**Problem:** assets are not updated even though “Disable cache” is enabled. Chrome keeps loading old versions, even after a hard reload.
 
-**Cause:** A **Service Worker** is likely interfering in Chrome. The DevTools "Disable cache" checkbox only affects the **HTTP Cache**, not the **Cache Storage** of a Service Worker. The SW continues to serve old assets.
+**Cause:** A **Service Worker** in Chrome is likely interfering. The DevTools “Disable cache” checkbox only affects the **HTTP cache**, not the **Cache Storage** of a Service Worker. The SW will keep serving stale assets.
 
-#### Immediate Solution
+#### Immediate solution
 
 1. **DevTools → Application → Service Workers**
-   - Click "**Unregister**"
-   - Optional: Enable "**Update on reload**"
-
+   - Click **Unregister**
+   - Optional: enable **Update on reload**
 2. **Application → Clear storage**
-   - Check all boxes ("Unregister service workers", "Cache storage", "IndexedDB", …)
+   - Check all boxes (“Unregister service workers”, “Cache storage”, “IndexedDB”, …)
    - Click **Clear site data**
+3. **Reload** (preferably right-click the reload button → **Empty cache and hard reload**)
 
-3. **Reload** (preferably right-click on the reload button → **Empty cache and hard reload**)
+#### Prevent permanently
 
-#### Prevent Permanently
-
-- **Disable Service Worker:** In `main.tsx`/`index.tsx` ensure the SW is **not registered**:
+- **Disable the Service Worker:** in `main.tsx`/`index.tsx` ensure the SW is **not registered**:
 
   ```javascript
   // Use serviceWorker.unregister()
   // or remove registerServiceWorker
   ```
 
-- **Production only:** Register SW only in production builds:
+- **Production only:** register the Service Worker only in production builds:
 
   ```javascript
   if (process.env.NODE_ENV === 'production') {
@@ -405,44 +436,7 @@ pnpm test-update  # Update snapshots when changes are intended
   ```
 
 - **Set cache headers correctly:**
-  - **`index.html`** gets `Cache-Control: no-store`
+  - `index.html` gets `Cache-Control: no-store`
   - Hashed files (`*.js`, `*.css`) may be cached
 
-- **DevTools settings:** In Chrome DevTools (Application → Service Workers) enable **"Bypass for network"** or **"Update on reload"** during development
-
-- **No false proxy headers:** With Vite/Webpack avoid reverse proxy headers or CDN layers that set `max-age` on HTML
-
-#### Alternative Causes
-
-If it's **not** a Service Worker:
-
-- **Check DevServer headers:** HTML should have `no-store`, assets with hash + long caching
-- **Back/Forward Cache:** Chrome's bfcache can be confusing - test with `location.reload(true)` or `window.onpageshow` handler (`event.persisted`)
-
-**In 90% of cases it's the Service Worker.** Unregister + Clear Storage fixes it immediately.
-
-## Pull request process
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a pull request
-
-### Pull request guidelines
-
-- Describe your changes in detail
-- Add screenshots for UI changes
-- Ensure all tests pass
-- Follow the code style guidelines
-- Update documentation if necessary
-
-## Browser support
-
-- Modern browsers with CSS Cascade Layers support
-- Chrome 99+, Firefox 97+, Safari 15.4+
-- For older browsers, a CSS Layers polyfill should be used
-
----
-
-Thank you for your contribution! 🎉
+- **DevTools settings:** in Chrome DevTools (Application → Service Workers) enable **“Bypass for network”** or **“Update on reload”** during development
