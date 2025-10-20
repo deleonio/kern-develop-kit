@@ -6,12 +6,18 @@
 #   Create at: GitLab Profile > Access Tokens > Add new token
 #   Scopes: api (full access) or write_repository (repository write access)
 #
+# - NPM_TOKEN: npm authentication token for publishing to npmjs.org
+#   Used by the publish jobs to authenticate with npm registry
+#   Create at: npmjs.com > Account Settings > Access Tokens > Generate New Token
+#   Recommended: Automation token type
+#
 variables:
   NODE_VERSION: '22.12'
   PNPM_VERSION: '10'
 
 stages:
-  - ci # Nur eine Stage - Jobs laufen komplett unabhängig
+  - ci # Quality checks, tests, and builds
+  - publish # Package publication to npm
 
 # Einfacher GitLab Cache für pnpm
 cache:
@@ -118,3 +124,97 @@ update-snapshots:
     expire_in: 1 week
     paths:
       - 'test-results/'
+
+# PIPELINE 3: NPM PACKAGE PUBLICATION
+
+# Publish to npm (manual trigger for development branches)
+publish-npm-manual:
+  stage: publish
+  image: node:${NODE_VERSION}
+  <<: *node_setup
+  script:
+    - pnpm install --frozen-lockfile
+    - echo "🔨 Building package..."
+    - pnpm build
+    - echo "📦 Preparing npm publication..."
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+    - |
+      if [ -z "$NPM_TOKEN" ]; then
+        echo "❌ ERROR: NPM_TOKEN variable is not set"
+        echo "Please configure this variable in GitLab project settings:"
+        echo "Settings > CI/CD > Variables > Add Variable"
+        echo "Name: NPM_TOKEN"
+        echo "Value: [Your npm authentication token]"
+        exit 1
+      fi
+    - echo "🚀 Publishing to npm..."
+    - pnpm publish --no-git-checks --access public
+    - echo "✅ Package published successfully to npmjs.org"
+  rules:
+    # Manual publication for main/develop branches
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "develop"
+  when: manual
+  environment:
+    name: npmjs
+    url: https://www.npmjs.com/package/@kern-ux/theme-kolibri
+  artifacts:
+    paths:
+      - dist/
+      - assets/
+    expire_in: 1 week
+
+# Publish to npm (automatic on version tags)
+publish-npm-tag:
+  stage: publish
+  image: node:${NODE_VERSION}
+  <<: *node_setup
+  script:
+    - pnpm install --frozen-lockfile
+    - echo "🔨 Building package..."
+    - pnpm build
+    - echo "📦 Preparing npm publication for tag ${CI_COMMIT_TAG}..."
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+    - |
+      if [ -z "$NPM_TOKEN" ]; then
+        echo "❌ ERROR: NPM_TOKEN variable is not set"
+        exit 1
+      fi
+    - |
+      if [[ "$CI_COMMIT_TAG" =~ -rc\. ]] || [[ "$CI_COMMIT_TAG" =~ -beta\. ]] || [[ "$CI_COMMIT_TAG" =~ -alpha\. ]]; then
+        echo "🚀 Publishing pre-release version ${CI_COMMIT_TAG} with tag 'next'"
+        pnpm publish --no-git-checks --access public --tag next
+      else
+        echo "🚀 Publishing stable version ${CI_COMMIT_TAG} with tag 'latest'"
+        pnpm publish --no-git-checks --access public --tag latest
+      fi
+    - echo "✅ Package version ${CI_COMMIT_TAG} published successfully to npmjs.org"
+  rules:
+    # Automatic publication for version tags
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+/
+  environment:
+    name: npmjs
+    url: https://www.npmjs.com/package/@kern-ux/theme-kolibri
+  artifacts:
+    paths:
+      - dist/
+      - assets/
+    expire_in: 1 month
+
+# Dry-run publish (for testing in merge requests)
+publish-npm-dryrun:
+  stage: publish
+  image: node:${NODE_VERSION}
+  <<: *node_setup
+  script:
+    - pnpm install --frozen-lockfile
+    - echo "🔨 Building package..."
+    - pnpm build
+    - echo "🧪 Running npm publish dry-run..."
+    - pnpm publish --dry-run --no-git-checks --access public
+    - echo "✅ Dry-run completed - package is ready for publication"
+  rules:
+    # Available in merge requests for testing
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  when: manual
+  allow_failure: true

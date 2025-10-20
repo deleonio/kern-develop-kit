@@ -14,7 +14,8 @@
 	},
 	"contributors": [
 		"Darko Pervan <darko.pervan@dataport.de>",
-		"Tom Marienfeld <tom.marienfeld@dataport.de>"
+		"Tom Marienfeld <tom.marienfeld@dataport.de>",
+		"Axel Wolters <axel.wolters@sk.hamburg.de>"
 	],
 	"type": "module",
 	"sideEffects": false,
@@ -92,6 +93,8 @@
 		"README.md"
 	],
 	"engines": {
+		"node": "^22.20.0",
+		"npm": "^10.9.3",
 		"pnpm": "^10"
 	},
 	"browserslist": [
