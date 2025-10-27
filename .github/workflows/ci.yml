@@ -41,7 +41,7 @@ jobs:
         run: pnpm build
       - name: Test
         run: pnpm test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         name: Upload test reports
         with:
